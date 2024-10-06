@@ -1,0 +1,9 @@
+---
+title: "Analysis of Teachers' Training Data"
+author: "Umoru Ogwu"
+date: "2024-10-05"
+categories: [code, analysis]
+image: "image.jpg"
+---
+
+This was a project organised by JDI, funded by TYDF. You can find the data [here](https://docs.google.com/spreadsheets/d/1wttWC5_glrB-CP19pBiFySz9fxqrTo7R/edit?gid=2147274115#gid=2147274115){target="_blank"}

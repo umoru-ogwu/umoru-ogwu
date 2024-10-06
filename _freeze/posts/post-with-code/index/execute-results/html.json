@@ -1,0 +1,15 @@
+{
+  "hash": "6a24bac78c4ce9ac8ef9753504a4281b",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Analysis of Teachers' Training Data\"\nauthor: \"Umoru Ogwu\"\ndate: \"2024-10-05\"\ncategories: [code, analysis]\nimage: \"image.jpg\"\n---\n\n\nThis was a project organised by JDI, funded by TYDF. You can find the data [here](https://docs.google.com/spreadsheets/d/1wttWC5_glrB-CP19pBiFySz9fxqrTo7R/edit?gid=2147274115#gid=2147274115){target=\"_blank\"}\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

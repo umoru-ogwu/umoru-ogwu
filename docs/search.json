@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "portfolio.html",
+    "href": "portfolio.html",
+    "title": "My Portfolio",
+    "section": "",
+    "text": "Analysis of Teachers’ Training Data\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nOct 5, 2024\n\n\nUmoru Ogwu\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nOct 2, 2024\n\n\nUmoru Ogwu\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Umoru Ogwu",
+    "section": "",
+    "text": "As a driven and analytical professional, I’m passionate about tackling the world’s most pressing challenges and contributing to the achievement of the United Nation’s Sustainable Development Goals (SDGs). With a solid academic foundation and a versatile skill set, I excel in a digital landscape. My expertise spans research and report writing, data analysis, problem-solving, backed by strong mathematical and critical thinking skills. I’m a self-motivated individual who thrives in independent and remote work environments, leveraging my resourcefulness and writing skills to deliver high-quality results. I’m excited to collaborate with like-minded individuals and organisations to drive positive change and create a lasting impact."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Analysis of Teachers’ Training Data",
+    "section": "",
+    "text": "This was a project organised by JDI, funded by TYDF. You can find the data here"
+  }
+]

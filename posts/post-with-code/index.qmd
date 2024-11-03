@@ -2,7 +2,7 @@
 title: "FoSSA Practical Analysis"
 author: "Umoru Ogwu"
 output: html document
-date: "2024-11-01"
+date: "2024-10-01"
 categories: [r, code, analysis]
 image: "bmi_bar.png"
 ---

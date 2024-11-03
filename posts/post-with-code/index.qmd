@@ -1,9 +1,203 @@
 ---
-title: "Analysis of Teachers' Training Data"
+title: "FoSSA Practical Analysis"
 author: "Umoru Ogwu"
-date: "2024-10-05"
-categories: [code, analysis]
-image: "image.jpg"
+output: html document
+date: "2024-11-01"
+categories: [r, code, analysis]
+image: "bmi_bar.png"
 ---
 
-This was a project organised by JDI, funded by TYDF. You can find the data [here](https://docs.google.com/spreadsheets/d/1wttWC5_glrB-CP19pBiFySz9fxqrTo7R/edit?gid=2147274115#gid=2147274115){target="_blank"}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = TRUE)
+# Load Libries
+if(!require(pacman)) install.packages(pacman)
+pacman::p_load(tidyverse, reactable, visdat,
+               DescTools, plotly, dplyr, gridExtra)
+
+# Load Dataset
+whitehall <- read_csv("C:/Users/UMARU-COMP/Desktop/GRAPH/COURSE_5_FoSSA/Datasets/Whitehall_fossa(in).csv")
+```
+
+# **A1.3a PRACTICAL**
+
+## **Dataset:**
+
+The Whitehall FoSSA Study is a simulated cohort study similar to the original Whitehall Study of Civil Servants, set up in the 1960s, which followed London-based male civil servants with a view to investigating cardiovascular disease and mortality. Participants from the original Whitehall cohort in the 1960s were flagged for mortality at the Office for National Statistics, which provided the date and cause of all deaths occurring until the end of September 2005. The (simulated) Whitehall FoSSA Study was conducted in 1997 to assess risk factors for cardiac and all-cause mortality in a subset of the original cohort that was still being followed. The Whitehall FoSSA Study contains information on 4,327 individuals that were followed-up from 1997 until 2005, and the variables are summarised in the table below:
+
+```{r}
+reactable(whitehall)
+```
+
+
+View data types and missing values:
+
+```{r}
+vis_dat(whitehall)
+```
+
+## Summarising different types of variable
+
+-   **Question A1.3a.ii: *What are the measures of central tendency (mean, median and mode) and the measures of spread (range, interquartile range and standard deviation) for the measured cholesterol of participants in our dataset (using the chol variable)?***
+
+**Answer A1.3a.ii :**
+
+**For the measures of central tendency:**
+
+### 1) Mean
+
+```{r}
+mean(whitehall$chol, na.rm = T)
+```
+
+### 2) Median
+
+```{r}
+median(whitehall$chol, na.rm = T)
+```
+
+### 3) Mode
+
+```{r}
+Mode(whitehall$chol, na.rm = T)
+```
+
+**For the measures of spread:**
+
+### 4) Range
+
+```{r}
+range <- range(whitehall$chol, na.rm = T)
+range <- diff(range)
+range
+```
+
+### 5) Interquartile Range (IQR)
+
+```{r}
+IQR(whitehall$chol, na.rm = T)
+```
+
+### 6) Standard Deviation (SD)
+
+```{r}
+sd(whitehall$chol, na.rm = T)
+```
+
+# **A1.3a PRACTICAL**
+
+## Bar charts and histograms
+
+-   **Question A1.3b.i: *Which type of variable can you plot with a bar chart? When should you use a histogram?***
+
+-   ***Question A1.3b.ii: Plot the bar chart that counts the number of participants in each BMI group and save it. Can you give this graph a title? Can you label the y axis and change the colour of the bars in the chart?***
+
+-   ***Question A1.3b.iii: Plot a histogram of SBP and describe the distribution.***
+
+-   ***Question A1.3b.iv:*** ***Regroup SBP in a different way, and decide which grouping best represents the data.***
+
+-   ***Question A1.3b.v: Can you change the number of bins used to plot the histogram of SBP? What is the effect of changing the number of bins?***
+
+### 1) Bar charts
+
+**Answer A1.3b.i :**
+
+-   Categorical variables (such as our newly created BMI categories) can be visually represented using a bar graph.
+
+-   Histograms should be employed for continuous numerical variables. In our current dataset, variables that could be appropriately represented using a histogram include systolic blood pressure, blood cholesterol, and LDL levels.
+
+**Answer A1.3b.ii:**
+
+-   ***Plot the bar chart that counts the number of participants in each BMI group and save it. Can you give this graph a title? Can you label the y axis and change the colour of the bars in the chart?***
+
+```{r}
+bmi_clean <- whitehall[!is.na(whitehall$bmi_grp4), ]
+
+# Convert bmi_grp4 to a factor with meaningful labels if not already done
+bmi_clean$bmi_grp4 <- factor(
+  bmi_clean$bmi_grp4,
+  levels = c(1, 2, 3, 4),
+  labels = c("Underweight", "Normal", "Overweight", "Obese")
+)
+
+# Create a bar plot of SBP grouped by BMI categories
+bmi_plot <- ggplot(bmi_clean, aes(x = bmi_grp4, fill = bmi_grp4)) +
+  geom_bar() +
+  labs(title = "Number of Participants by BMI Groups", x = "BMI Group", y = "Number of Participants") +
+  scale_fill_manual(
+    values = c(
+      "Underweight" = "lightblue",
+      "Normal" = "lightgreen",
+      "Overweight" = "orange",
+      "Obese" = "red"
+    )
+  ) +
+  theme_minimal()
+ggplotly(bmi_plot)
+```
+
+### 2) Histogram
+
+**Answer A1.3b.iii:**
+
+-   ***Plot a histogram of SBP and describe the distribution.***
+
+```{r}
+sbp_clean <- whitehall[!is.na(whitehall$sbp),]
+
+sbp_hist <- ggplot(sbp_clean, aes(x = sbp))+
+  geom_histogram(binwidth = 5, fill = "lightblue",
+                 color = "black")+
+  labs(title = "Histogram of Systolic Blood Pressure (SBP)",
+       x = "Systolic Blood Pressure (mmHg)", 
+       y = "Frequency")+
+  theme_minimal()
+
+ggplotly(sbp_hist)
+```
+
+**Describing the Distribution of Systolic Blood Pressure (SBP)**
+
+-   **Central Tendency:** The distribution is centered around a value somewhere between 120 and 130 mmHg, which suggests that most individuals in the sample have SBP values within this range.
+
+-   **Symmetry:** The distribution is roughly symmetrical, meaning that the left and right sides of the histogram are relatively balanced.
+
+-   **Skewness:** There is no significant skew, indicating that the data is not heavily skewed to the left or right.
+
+-   **Kurtosis:** The distribution appears to be mesokurtic, meaning it has a similar degree of peakedness as a normal distribution.
+
+-   **Outliers:** There are a few potential outliers, particularly on the higher end of the distribution (above 200 mmHg). These would need further investigation to determine if they are valid data points or if they might be errors.
+
+**Overall, the normal distribution shape suggests that the majority of individuals in the sample have SBP values within a relatively narrow range, with fewer individuals having much higher or lower values.**
+
+**Answer A1.3b.iv:**
+
+-   ***Regroup SBP in a different way, and decide which grouping best represents the data.***
+
+```{r}
+# Remove non-finite values in SBP and convert sbp to numeric
+cleaned_data <- whitehall[!is.na(whitehall$sbp), ]
+cleaned_data$sbp <- as.numeric(as.character(cleaned_data$sbp))
+
+# Define new SBP categories
+cleaned_data$sbp_category <- cut(cleaned_data$sbp,
+                                 breaks = c(-Inf, 90, 120, 130, 140, Inf),
+                                 labels = c("Hypotensive", "Normal", "Elevated", "Hypertension Stage 1", "Hypertension Stage 2"))
+
+# Plot the distribution of SBP categories
+sbp_plot <- ggplot(cleaned_data, aes(x = sbp_category, fill = sbp_category)) +
+  geom_bar() +
+  labs(title = "Participants by SBP Category",
+       x = "SBP Category",
+       y = "Number of Participants") +
+  scale_fill_manual(values = c("Hypotensive" = "lightblue", 
+                               "Normal" = "lightgreen", 
+                               "Elevated" = "yellow", 
+                               "Hypertension Stage 1" = "orange", 
+                               "Hypertension Stage 2" = "red")) +
+  theme_minimal()+
+   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Display the plot
+ggplotly(sbp_plot)
+
+```

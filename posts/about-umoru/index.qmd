@@ -1,0 +1,13 @@
+---
+title: "ALX AiCE - AI Career Essentials"
+subtitle: "Milestone 5: Showcasing My Achievemnets"
+author: "Umoru Ogwu"
+date: "2024-07-16"
+categories: [alx, aice, aiced2024, alx_ai]
+---
+
+This is a simple webpage created using Canva to showcase the work I did throughout the course. This webpage serves also as a portfolio of evidence. The aim is to present my achievements in a unique and visually appealing way, demonstrating my skills and projects effectively. See the webpage [here](https://aboutumoru.my.canva.site/umoru-ai-for-change){target="_blank"}
+
+![](pro_pic.jpg)
+
+

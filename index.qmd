@@ -9,7 +9,7 @@ about:
       href: https://linkedin.com/in/umoru-ogwu-636785203
     - icon: github
       text: Github
-      href: https://github.com/Ogwu95
+      href: https://github.com/umoru-ogwu
 ---
 
 As a driven and analytical professional, I'm passionate about tackling the world's most pressing challenges and contributing to the achievement of the United Nation's Sustainable Development Goals (SDGs). With a solid academic foundation and a versatile skill set, I excel in a digital landscape. My expertise spans research and report writing, data analysis, problem-solving, backed by strong mathematical and critical thinking skills. I'm a self-motivated individual who thrives in independent and remote work environments, leveraging my resourcefulness and writing skills to deliver high-quality results. I'm excited to collaborate with like-minded individuals and organisations to drive positive change and create a lasting impact.

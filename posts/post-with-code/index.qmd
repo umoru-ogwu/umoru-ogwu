@@ -26,6 +26,7 @@ The Whitehall FoSSA Study is a simulated cohort study similar to the original Wh
 
 ```{r}
 dataset <- reactable(whitehall)
+dataset
 ```
 
 View data types and missing values:

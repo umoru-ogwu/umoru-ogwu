@@ -131,9 +131,9 @@ bmi_plot <- ggplot(bmi_clean, aes(x = bmi_grp4, fill = bmi_grp4)) +
       "Obese" = "red"
     )
   ) +
-  theme_minimal()
-ggplotly(bmi_plot)+
+  theme_minimal()+
    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplotly(bmi_plot) 
 ```
 
 ### 2) Histogram

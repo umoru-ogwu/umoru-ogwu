@@ -132,7 +132,8 @@ bmi_plot <- ggplot(bmi_clean, aes(x = bmi_grp4, fill = bmi_grp4)) +
     )
   ) +
   theme_minimal()
-ggplotly(bmi_plot)
+ggplotly(bmi_plot)+
+   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ### 2) Histogram

@@ -1,26 +1,5 @@
 [
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
-  },
-  {
-    "objectID": "portfolio.html",
-    "href": "portfolio.html",
-    "title": "My Portfolio",
-    "section": "",
-    "text": "FoSSA Practical Analysis\n\n\n\n\n\n\nr\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nOct 1, 2024\n\n\nUmoru Ogwu\n\n\n\n\n\n\n\n\n\n\n\n\nALX AiCE - AI Career Essentials\n\n\nMilestone 5: Showcasing My Achievemnets\n\n\n\nalx\n\n\naice\n\n\naiced2024\n\n\nalx_ai\n\n\n\n\n\n\n\n\n\nJul 16, 2024\n\n\nUmoru Ogwu\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Umoru Ogwu",
-    "section": "",
-    "text": "As a driven and analytical professional, I’m passionate about tackling the world’s most pressing challenges and contributing to the achievement of the United Nation’s Sustainable Development Goals (SDGs). With a solid academic foundation and a versatile skill set, I excel in a digital landscape. My expertise spans research and report writing, data analysis, problem-solving, backed by strong mathematical and critical thinking skills. I’m a self-motivated individual who thrives in independent and remote work environments, leveraging my resourcefulness and writing skills to deliver high-quality results. I’m excited to collaborate with like-minded individuals and organisations to drive positive change and create a lasting impact."
-  },
-  {
     "objectID": "posts/post-with-code/index.html",
     "href": "posts/post-with-code/index.html",
     "title": "FoSSA Practical Analysis",
@@ -47,6 +26,20 @@
     "title": "FoSSA Practical Analysis",
     "section": "Bar charts and histograms",
     "text": "Bar charts and histograms\n\nQuestion A1.3b.i: Which type of variable can you plot with a bar chart? When should you use a histogram?\nQuestion A1.3b.ii: Plot the bar chart that counts the number of participants in each BMI group and save it. Can you give this graph a title? Can you label the y axis and change the colour of the bars in the chart?\nQuestion A1.3b.iii: Plot a histogram of SBP and describe the distribution.\nQuestion A1.3b.iv: Regroup SBP in a different way, and decide which grouping best represents the data.\nQuestion A1.3b.v: Can you change the number of bins used to plot the histogram of SBP? What is the effect of changing the number of bins?\n\n\n1) Bar charts\nAnswer A1.3b.i :\n\nCategorical variables (such as our newly created BMI categories) can be visually represented using a bar graph.\nHistograms should be employed for continuous numerical variables. In our current dataset, variables that could be appropriately represented using a histogram include systolic blood pressure, blood cholesterol, and LDL levels.\n\nAnswer A1.3b.ii:\n\nPlot the bar chart that counts the number of participants in each BMI group and save it. Can you give this graph a title? Can you label the y axis and change the colour of the bars in the chart?\n\n\nbmi_clean &lt;- whitehall[!is.na(whitehall$bmi_grp4), ]\n\n# Convert bmi_grp4 to a factor with meaningful labels if not already done\nbmi_clean$bmi_grp4 &lt;- factor(\n  bmi_clean$bmi_grp4,\n  levels = c(1, 2, 3, 4),\n  labels = c(\"Underweight\", \"Normal\", \"Overweight\", \"Obese\")\n)\n\n# Create a bar plot of SBP grouped by BMI categories\nbmi_plot &lt;- ggplot(bmi_clean, aes(x = bmi_grp4, fill = bmi_grp4)) +\n  geom_bar() +\n  labs(title = \"Number of Participants by BMI Groups\", x = \"BMI Group\", y = \"Number of Participants\") +\n  scale_fill_manual(\n    values = c(\n      \"Underweight\" = \"lightblue\",\n      \"Normal\" = \"lightgreen\",\n      \"Overweight\" = \"orange\",\n      \"Obese\" = \"red\"\n    )\n  ) +\n  theme_minimal()+\n   theme(axis.text.x = element_text(angle = 45, hjust = 1))\nggplotly(bmi_plot) \n\n\n\n\n\n\n\n2) Histogram\nAnswer A1.3b.iii:\n\nPlot a histogram of SBP and describe the distribution.\n\n\nsbp_clean &lt;- whitehall[!is.na(whitehall$sbp),]\n\nsbp_hist &lt;- ggplot(sbp_clean, aes(x = sbp))+\n  geom_histogram(binwidth = 5, fill = \"lightblue\",\n                 color = \"black\")+\n  labs(title = \"Histogram of Systolic Blood Pressure (SBP)\",\n       x = \"Systolic Blood Pressure (mmHg)\", \n       y = \"Frequency\")+\n  theme_minimal()\n\nggplotly(sbp_hist)\n\n\n\n\n\nDescribing the Distribution of Systolic Blood Pressure (SBP)\n\nCentral Tendency: The distribution is centered around a value somewhere between 120 and 130 mmHg, which suggests that most individuals in the sample have SBP values within this range.\nSymmetry: The distribution is roughly symmetrical, meaning that the left and right sides of the histogram are relatively balanced.\nSkewness: There is no significant skew, indicating that the data is not heavily skewed to the left or right.\nKurtosis: The distribution appears to be mesokurtic, meaning it has a similar degree of peakedness as a normal distribution.\nOutliers: There are a few potential outliers, particularly on the higher end of the distribution (above 200 mmHg). These would need further investigation to determine if they are valid data points or if they might be errors.\n\nOverall, the normal distribution shape suggests that the majority of individuals in the sample have SBP values within a relatively narrow range, with fewer individuals having much higher or lower values.\nAnswer A1.3b.iv:\n\nRegroup SBP in a different way, and decide which grouping best represents the data.\n\n\n# Remove non-finite values in SBP and convert sbp to numeric\ncleaned_data &lt;- whitehall[!is.na(whitehall$sbp), ]\ncleaned_data$sbp &lt;- as.numeric(as.character(cleaned_data$sbp))\n\n# Define new SBP categories\ncleaned_data$sbp_category &lt;- cut(cleaned_data$sbp,\n                                 breaks = c(-Inf, 90, 120, 130, 140, Inf),\n                                 labels = c(\"Hypotensive\", \"Normal\", \"Elevated\", \"Hypertension Stage 1\", \"Hypertension Stage 2\"))\n\n# Plot the distribution of SBP categories\nsbp_plot &lt;- ggplot(cleaned_data, aes(x = sbp_category, fill = sbp_category)) +\n  geom_bar() +\n  labs(title = \"Participants by SBP Category\",\n       x = \"SBP Category\",\n       y = \"Number of Participants\") +\n  scale_fill_manual(values = c(\"Hypotensive\" = \"lightblue\", \n                               \"Normal\" = \"lightgreen\", \n                               \"Elevated\" = \"yellow\", \n                               \"Hypertension Stage 1\" = \"orange\", \n                               \"Hypertension Stage 2\" = \"red\")) +\n  theme_minimal()+\n   theme(axis.text.x = element_text(angle = 45, hjust = 1))\n\n# Display the plot\nggplotly(sbp_plot)"
+  },
+  {
+    "objectID": "portfolio.html",
+    "href": "portfolio.html",
+    "title": "My Portfolio",
+    "section": "",
+    "text": "FoSSA Practical Analysis\n\n\n\n\n\n\nr\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nOct 1, 2024\n\n\nUmoru Ogwu\n\n\n\n\n\n\n\n\n\n\n\n\nALX AiCE - AI Career Essentials\n\n\nMilestone 5: Showcasing My Achievemnets\n\n\n\nalx\n\n\naice\n\n\naiced2024\n\n\nalx_ai\n\n\n\n\n\n\n\n\n\nJul 16, 2024\n\n\nUmoru Ogwu\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Umoru Ogwu",
+    "section": "",
+    "text": "As a driven and analytical professional, I’m passionate about tackling the world’s most pressing challenges and contributing to the achievement of the United Nation’s Sustainable Development Goals (SDGs). With a solid academic foundation and a versatile skill set, I excel in a digital landscape. My expertise spans research and report writing, data analysis, problem-solving, backed by strong mathematical and critical thinking skills. I’m a self-motivated individual who thrives in independent and remote work environments, leveraging my resourcefulness and writing skills to deliver high-quality results. I’m excited to collaborate with like-minded individuals and organisations to drive positive change and create a lasting impact."
   },
   {
     "objectID": "posts/about-umoru/index.html",

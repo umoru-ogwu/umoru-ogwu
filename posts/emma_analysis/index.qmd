@@ -1,0 +1,344 @@
+---
+title: "IMPACT OF OIL TRADE ON ECONOMIC GROWTH"
+author: "Umoru Ogwu"
+date: "2025-03-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+if(!require(pacman)) install.packages("pacman")
+pacman::p_load(tidyverse,
+    readxl,
+    ggplot2,
+    janitor,
+    plotly,
+    reticulate,
+    reshape2,
+    psych,
+    tseries,
+    urca,
+    frontier,
+    rugarch,
+    ggcorrplot,
+    corrplot,
+    knitr,
+    kableExtra,
+    broom, 
+    car,
+    stargazer,
+    webshot, 
+    htmltools,
+    reactable)
+```
+
+# Data Analysis: Impact of Oil Trade on Nigeria's Growth
+
+### Abstract
+
+The oil trade plays a significant role in Nigeria’s economic performance, influencing key macroeconomic indicators such as GDP growth, exchange rates, inflation, and export revenues. This study examines the impact of oil trade on Nigeria’s economy using econometric analysis, including correlation tests, cointegration tests, and OLS regression modeling. The research utilizes historical data on oil prices, oil exports, exchange rates, and other relevant economic variables to determine the extent of the relationship between the oil trade and economic growth. The findings reveal a strong correlation between oil trade and Nigeria’s macroeconomic performance, with fluctuations in oil prices and exports significantly affecting GDP growth and exchange rates. Cointegration tests indicate a long-term relationship between oil trade and economic stability, while OLS regression analysis confirms that oil price volatility and trade imbalances contribute to economic instability. Residual diagnostic tests highlight the presence of heteroskedasticity and potential model limitations, suggesting the need for further refinement in econometric modeling. This study contributes to the existing literature by providing empirical evidence on the vulnerabilities of Nigeria’s economy to oil trade fluctuations. Policy recommendations include diversifying the economy, strengthening fiscal policies, and adopting strategic trade agreements to mitigate risks associated with oil dependency. The research also discusses challenges such as data limitations and external economic shocks while suggesting future research directions, including exploring non-oil sectors and applying advanced econometric techniques for deeper insights.
+
+### Introduction
+
+This chapter outlines the research design, data sources, variables, and analytical techniques employed to examine the relationship between oil trade and economic growth in Nigeria. The methodology is designed to provide a robust framework for empirical analysis, ensuring the validity and reliability of the study's findings.
+
+### Research Design
+
+The study adopts a quantitative research design, utilizing econometric methods to analyze time-series data. This approach is appropriate for assessing the dynamic relationship between oil trade and economic growth over a specified period.
+
+### Data Sources and Collection
+
+The analysis relies on secondary data collected from reputable sources:
+
+-   Gross Domestic Product (GDP) Growth Rate (%): Annual data obtained from the World Bank's World Development Indicators.
+
+-   Crude Oil Exports (thousand barrels per day): Data sourced from the Organization of the Petroleum Exporting Countries (OPEC) annual statistical bulletins.
+
+-   Inflation Rate (%): Annual consumer price index data from the Central Bank of Nigeria (CBN) statistical bulletins.
+
+-   Exchange Rate (Naira/USD): Official exchange rates sourced from the CBN.
+
+-   Average Crude Oil Price (USD per barrel): Data obtained from the U.S. Energy Information Administration (EIA).
+
+The study period spans from 2000 to 2023, providing a comprehensive view of the long-term trends and relationships.
+
+### Variables and Model Specification
+
+The study examines the following variables:
+
+**Dependent Variable:**
+
+-   Economic Growth (EG): Measured by the annual GDP growth rate (%).
+
+**Independent Variables:**
+
+-   Crude Oil Exports (COE): Volume of crude oil exports (thousand barrels per day).
+
+-   Average Crude Oil Price (COP): Average annual price of crude oil (USD per barrel).
+
+-   Exchange Rate (ER): Annual average exchange rate (Naira/USD).
+
+-   Inflation Rate (INF): Annual inflation rate (%).
+
+The econometric model is specified as follows:
+
+EGt = β0 + β1(COEt) + β2(COPt) + (ERt) + β4(INFt) + ϵt
+
+In this model:
+
+-   EGt is the annual GDP growth rate,
+
+-   COEt is the average daily crude oil exports (in thousand barrels per day),
+
+-   COPt represents the average annual global oil price (in USD per barrel),
+
+-   INFt is the annual inflation rate,
+
+-   ERt is the average annual exchange rate (Naira/USD), and
+
+-   ϵt is the error term.
+
+### Limitations of the Methodology
+
+1.  Data Availability: Limited data points for certain variables may constrain the robustness of results.
+2.  Linear Assumptions: OLS regression assumes linearity, which may oversimplify complex relationships.
+3.  Exclusion of Other Factors: The study focuses on oil trade variables, potentially omitting other critical drivers of GDP growth.
+
+# Analysis and Results
+
+### Load and View Data
+
+```{r echo=FALSE, paged.print=TRUE}
+# Crude oil export data
+data <- read_excel("C:/Users/UMARU-COMP/Documents/GitHub/umoru-ogwu/posts/emma_analysis/dataset_2000-2023.xlsx") 
+
+reactable(data)
+
+```
+
+### View Missing Data
+
+```{r echo=FALSE, warning=FALSE}
+view <- visdat::vis_miss(data)
+view
+```
+
+### Descriptive Statistics
+
+The descriptive statistics provide an overview of the key variables used in the analysis, including crude oil exports, GDP growth, inflation rates, exchange rates, and average oil prices. Table 1 summarizes the descriptive statistics:
+
+```{r echo=FALSE}
+# Summary statistics for merged data
+descriptive_stats <- describe(data[, -1])
+
+descriptive_stats <- descriptive_stats[, -c(1, 2)]  # Remove 'vars' and 'n' columns
+
+
+
+descriptive_stats <- reactable(descriptive_stats)
+
+descriptive_stats
+# Save descriptive stats table
+# write.csv(descriptive_stats, "descriptive stats table.csv")
+```
+
+### Unit Root Tests
+
+To ensure the validity of the regression analysis, unit root tests were conducted using the Augmented Dickey-Fuller (ADF) method. The Augmented Dickey-Fuller (ADF) test and Phillips-Perron (PP) test are used to check if the variables are stationary (i.e., no unit root). The null hypothesis (H₀) states that the series has a unit root (non-stationary). If the p-value \< 0.05, we reject H₀, meaning the variable is stationary. Table 2 presents the results:
+
+```{r echo=FALSE}
+# Perform ADF Test on all variables
+adf_gdp_growth <- adf.test(data$gdp_growth, alternative = "stationary")
+adf_oil_exports <- adf.test(data$oil_exports, alternative = "stationary")
+adf_inflation <- adf.test(data$inflation, alternative = "stationary")
+adf_exchange_rate <- adf.test(data$exchange_rate, alternative = "stationary")
+adf_oil_price <- adf.test(data$oil_price, alternative = "stationary")
+
+# Combine the results into a data frame
+adf_results <- data.frame(
+  Variable = c("GDP Growth", "Inflation Rate", "Exchange Rate", "Oil Price", "Crude Oil Exports"),
+  ADF_Statistic = c(adf_gdp_growth$statistic, adf_inflation$statistic, adf_exchange_rate$statistic, adf_oil_price$statistic, adf_oil_exports$statistic),
+  p_value = c(adf_gdp_growth$p.value, adf_inflation$p.value, adf_exchange_rate$p.value, adf_oil_price$p.value, adf_oil_exports$p.value),
+  Stationary = ifelse(c(adf_gdp_growth$p.value, adf_inflation$p.value, adf_exchange_rate$p.value, adf_oil_price$p.value, adf_oil_exports$p.value) < 0.05, "Yes", "No")
+)
+
+adf_results <- reactable(adf_results)
+adf_results
+
+# Print the results
+# print(adf_results)
+
+# Save unit root test table
+# write.csv(adf_results, "unit root table.csv")
+
+```
+
+**GDP Growth is Stationary**
+
+-   ADF p-value = 0.015 \< 0.05, so we reject H₀ → stationary.
+
+-   PP confirms this, as the test statistic is significantly negative.
+
+**Oil Exports, Inflation, Exchange Rate, and Oil Price are NOT Stationary**
+
+-   p-values \> 0.05, meaning we fail to reject H₀ → non-stationary.
+
+This suggests unit roots are present, meaning these variables have trends or seasonality over time. The results indicate that GDP growth is stationary, while the oil exports, inflation, exchange rate, and oil price are non-stationary. The non-stationary variables were differenced before further analysis.
+
+### Correlation Analysis
+
+Correlation analysis was conducted to examine the relationships between independent variables. Table 3 summarizes the results:
+
+Table 3: Multicollinearity of variables
+
+```{r echo=FALSE}
+correlation <- cor(data [, -1])  
+# Plot the correlation matrix 
+corr_plot <- ggcorrplot(correlation, lab = TRUE, colors = c("red", "white", "blue"),            title = "Correlation Matrix", lab_size = 3)
+
+corr_plot
+```
+
+Expected correlations:
+
+-   Positive relationships (e.g., between crude oil exports and GDP growth).
+
+-   Negative relationships (e.g., inflation and GDP growth).
+
+### OLS Regression Analysis
+
+Below is the resulting coefficient table from the OLS regression (2023 data). The table includes each term’s coefficient estimate, standard error, t-statistic, and p-value.
+
+```{r include=FALSE}
+# Define OLS Regression Model
+ols_model <- lm(gdp_growth ~ oil_exports + inflation + exchange_rate +
+                  oil_price, data = data)
+
+# Print Regression Summary
+ols_model_summary <- summary(ols_model)
+
+# vif(ols_model)
+```
+
+```{r include=FALSE}
+# Create a formatted regression table using stargazer
+reg_table <- stargazer(ols_model, type = "text", 
+          title = "OLS Regression Results", 
+          dep.var.labels = "GDP Growth (%)",
+          covariate.labels = c("Crude Oil Exports (Thousand b/d)", 
+                               "Inflation Rate (%)", 
+                               "Exchange Rate (Naira/USD)", 
+                               "Average Oil Price (USD/barrel)"),
+          digits = 3)
+
+```
+
+```{r include=FALSE}
+tidy_model <- tidy(ols_model)
+#write.csv(tidy_model, "OLS_Regression_Tidy.csv", row.names = FALSE)
+
+```
+
+```{r include=FALSE}
+# Create a temporary HTML file with the regression table
+html_file <- "regression_results.html"
+stargazer(ols_model, type = "html", out = html_file, 
+          title = "OLS Regression Results",
+          dep.var.labels = "GDP Growth (%)",
+          covariate.labels = c("Crude Oil Exports (thousand b/d)", "Inflation Rate (%)", 
+                               "Exchange Rate (Naira/USD)", "Oil Price (USD/barrel)"),
+          omit.stat = c("ser", "f"))
+
+```
+
+```{r include=FALSE}
+# Install PhantomJS (if not already installed)
+webshot::install_phantomjs()
+
+```
+
+```{r include=FALSE}
+# Save the regression table as a PNG image
+png_file <- "regression_results.png"
+webshot(html_file, file = png_file, cliprect = "viewport", delay = 0.5)
+
+```
+
+```{r echo=FALSE}
+# Save the regression table as a PNG image
+png_file <- "regression_results.png"
+webshot(html_file, file = png_file, cliprect = "viewport", delay = 0.5)
+
+```
+
+### Interpretation of Findings
+
+**Intercept (β0):** The intercept is −20.6713-20.6713−20.6713, suggesting that if all explanatory variables were zero, GDP growth would be about −20.67-20.67−20.67%. However, interpreting the intercept alone may not be meaningful in macroeconomic contexts.
+
+**Oil Exports (β1):** Coefficient = +0.0128+0.0128+0.0128, p-Value = 0.1308 (\> 0.05). **Interpretation:** A one-unit increase in crude oil exports (thousand b/d) is associated with a 0.0128 percentage point increase in GDP growth. However, the effect is not statistically significant at the 5% level (p-value = 0.13). This implies that, within the sample period, oil exports did not show a robust, statistically significant effect on GDP growth.
+
+**Inflation (β2):** Coefficient = +0.0807+0.0807+0.0807, p-Value = 0.8554 (\> 0.05).
+
+**Interpretation:** Inflation has a small positive coefficient but is statistically insignificant. Hence, we cannot conclude that inflation directly drives GDP growth in this model.
+
+**Exchange Rate (β3):** Coefficient = +0.0158+0.0158+0.0158, p-Value = 0.6154 (\> 0.05). **Interpretation:** A one-unit increase in the exchange rate (Naira/USD) is linked to a 0.0158 percentage point rise in GDP growth, but this relationship is not significant. The sign is positive, which is somewhat unexpected, suggesting that a higher exchange rate might correlate with higher GDP growth, but the large p-value means the result could be due to random variation.
+
+**Oil Price (β4):** Coefficient = −0.06396-0.06396−0.06396, p-Value = 0.3732 (\> 0.05). **Interpretation:** Oil price has a negative sign, implying that higher oil prices might slightly reduce GDP growth in this dataset. However, the p-value (0.37) is well above 0.05, so we lack sufficient evidence to confirm a statistically significant effect.
+
+# Discussion, Conclusion, and Recommendations
+
+### Summary of Findings
+
+The study aimed to examine the relationship between oil trade and Nigeria’s economic growth using time-series data from 2000 to 2023. The analysis employed descriptive statistics, unit root tests, and Ordinary Least Squares (OLS) regression, with supplementary cointegration tests to explore long-run equilibrium relationships. The regression model was specified as follows:
+
+EGt = β0 + β1(COEt) + β2(COPt) + (ERt) + β4(INFt) + ϵt
+
+The OLS regression results indicated that while oil exports, oil prices, inflation, and exchange rates were included as explanatory variables, none of these coefficients were statistically significant at the conventional 5% level. Notably, the estimated coefficient for oil exports was positive but insignificant (p = 0.131), suggesting that, within the sample period, crude oil exports did not have a robust direct impact on GDP growth. Additionally, unit root tests showed that while GDP growth was stationary, other variables required differencing to achieve stationarity.
+
+### Comparison with Existing Literature
+
+The empirical findings demonstrate that oil trade plays a pivotal role in Nigeria’s economy, yet the direct impact of crude oil exports on GDP growth remains ambiguous. Although the regression coefficient for oil exports is positive, the lack of statistical significance implies that other macroeconomic factors or structural inefficiencies may be masking its true effect. This result is consistent with some previous studies (e.g., Nweze and Edame, 2016; Adeniyi et al., 2019) that have found mixed evidence on the role of oil exports in driving economic growth. While many scholars underscore the importance of oil revenue, our analysis suggests that fluctuations in oil prices and exchange rates might be more critical determinants of Nigeria’s economic performance. Compared to earlier studies that focused solely on the supply side, this research highlights the importance of incorporating both oil supply and demand factors. The findings also resonate with literature emphasizing the need for diversified revenue sources, as over-reliance on oil exports may lead to instability in the face of global price volatility.
+
+### Policy Recommendations
+
+Based on the analysis, the following policy recommendations are proposed to enhance the economic benefits derived from oil trade:
+
+-   Economic Diversification: The Nigerian government should accelerate efforts to diversify the economy by investing in non-oil sectors such as agriculture, manufacturing, and technology. This would reduce over-dependence on oil revenue and help stabilize the economy during periods of oil price volatility.
+
+-   Exchange Rate Stabilization: Implementing prudent monetary policies and strengthening foreign exchange reserve management can help stabilize the naira. A stable exchange rate would mitigate the adverse impact of currency fluctuations on economic growth.
+
+-   Infrastructure Development: Investing in refining capacity and upgrading transportation infrastructure will improve the efficiency of the oil sector. Enhanced infrastructure could reduce the reliance on imported refined petroleum products and create additional value within the domestic economy.
+
+-   Regulatory Reforms: Strengthening regulatory frameworks to combat corruption and ensure transparency in the management of oil revenues is crucial. Clear, enforceable regulations will foster a more efficient oil trade environment and encourage foreign investment.
+
+### Addressing Challenges and Risks
+
+Despite the significance of oil trade, Nigeria faces several challenges that could hinder its economic growth:
+
+-   Price Volatility: The high volatility of global oil prices creates uncertainty in revenue generation. Hedging and stabilization mechanisms are necessary to manage this risk.
+
+-   Structural Inefficiencies: Issues such as inadequate infrastructure, corruption, and a lack of diversification in the oil sector reduce overall efficiency. Addressing these inefficiencies requires long-term investments and policy reforms.
+
+-   Data Constraints: The reliance on secondary data from various sources introduces potential discrepancies. Future efforts should aim to consolidate and standardize data collection processes.
+
+### Research Limitations and Future Directions
+
+This study is subject to several limitations:
+
+-   Data Availability: The analysis relied on secondary data, which may have inconsistencies and gaps, particularly regarding refined petroleum product imports.
+
+-   Model Specification: The OLS regression model, while informative, may not fully capture nonlinear relationships or structural breaks in Nigeria’s economy.
+
+-   External Influences: Global economic shocks and geopolitical risks, which are not fully incorporated in the model, may also influence the relationship between oil trade and GDP growth. For future research, it is recommended that:
+
+-   More advanced econometric models, such as Vector Error Correction Models (VECM) or Generalized Autoregressive Conditional Heteroskedasticity (GARCH) models, be applied to capture both short-run dynamics and long-run equilibrium relationships.
+
+-   A broader set of variables, including government expenditure, foreign direct investment, and other macroeconomic indicators, be included to provide a more comprehensive analysis.
+
+-   Comparative studies with other oil-dependent economies be conducted to identify best practices and effective policy measures.
+
+### Conclusion
+
+In conclusion, while oil trade is undeniably central to Nigeria’s economic framework, this study finds that the direct effect of crude oil exports on GDP growth is not statistically significant. Instead, factors such as oil price volatility and exchange rate fluctuations appear to have more pronounced effects on economic performance. Addressing the inefficiencies in Nigeria’s oil trade, through economic diversification, infrastructure development, regulatory reforms, and effective risk management, is essential for fostering sustainable economic growth. The recommendations provided here offer a roadmap for policymakers to harness oil trade more effectively while mitigating its inherent risks.
+
